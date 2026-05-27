@@ -15,7 +15,7 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import relationship
 
-from api.app.database import Base
+from database import Base
 
 
 class AreaConocimiento(Base):

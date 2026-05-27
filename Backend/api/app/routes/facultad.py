@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from api.app.database import get_db
-from api.app.models import Facultad
-from api.app.schemas import FacultadCreate, FacultadRead, FacultadUpdate
+from database import get_db
+from models import Facultad
+from schemas import FacultadCreate, FacultadRead, FacultadUpdate
 
 router = APIRouter(prefix="/facultades", tags=["01. Facultades"])
 

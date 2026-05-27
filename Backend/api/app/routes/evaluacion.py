@@ -3,9 +3,9 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from api.app.database import get_db
-from api.app.models import Docente, EvaluacionDocente
-from api.app.schemas import EvaluacionCreate, EvaluacionRead, EvaluacionUpdate
+from database import get_db
+from models import Docente, EvaluacionDocente
+from schemas import EvaluacionCreate, EvaluacionRead, EvaluacionUpdate
 
 router = APIRouter(prefix="/evaluaciones", tags=["05. Evaluaciones"])
 

@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from api.app.database import get_db
-from api.app.models import LineaInvestigacion
-from api.app.schemas import LineaCreate, LineaRead, LineaUpdate
+from database import get_db
+from models import LineaInvestigacion
+from schemas import LineaCreate, LineaRead, LineaUpdate
 
 router = APIRouter(prefix="/lineas", tags=["02. Líneas de investigación"])
 
