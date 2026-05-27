@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión Profesoral Pro</title>
+  <style>
+    :root{
+      --bg:#f3f6fb; --panel:#ffffff; --panel-2:#f8fbff; --text:#152033; --muted:#66758b;
+      --line:#e3eaf3; --primary:#2563eb; --primary-2:#1d4ed8; --accent:#0f172a;
+      --good:#e7f9ee; --good-t:#166534; --warn:#fff7ed; --warn-t:#9a3412;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(180deg,#f8fbff 0%, var(--bg) 100%);color:var(--text)}
+    .shell{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+    .side{padding:24px;border-right:1px solid var(--line);background:rgba(255,255,255,.78);backdrop-filter:blur(10px);position:sticky;top:0;height:100vh}
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+    .logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,var(--primary),#fa6060)}
+    .brand h1{font-size:1.1rem;margin:0}
+    .brand p{margin:0;color:var(--muted);font-size:.9rem}
+    .nav a{display:block;padding:12px 14px;border-radius:14px;color:var(--text);text-decoration:none;margin:6px 0;border:1px solid transparent}
+    .nav a:hover,.nav a.active{background:#eef4ff;border-color:#d7e4ff;color:var(--primary-2)}
+    .main{padding:24px 28px 36px}
+    .top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
+    .hero{max-width:760px}
+    .hero h2{font-size:2rem;margin:0 0 8px}
+    .hero p{margin:0;color:var(--muted);line-height:1.5}
+    .actions{display:flex;gap:10px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 14px;border-radius:14px;text-decoration:none;border:1px solid var(--line);background:var(--panel);color:var(--text);font-weight:700}
+    .btn.primary{background:var(--primary);color:#fff;border-color:transparent}
+    .btn:hover{transform:translateY(-1px)}
+    .stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin:18px 0 22px}
+    .stat{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 10px 30px rgba(15,23,42,.05)}
+    .stat .label{color:var(--muted);font-size:.9rem}
+    .stat .value{font-size:1.8rem;font-weight:800;margin-top:6px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-bottom:16px}
+    .card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 10px 30px rgba(15,23,42,.05)}
+    .section-title{display:flex;justify-content:space-between;gap:12px;align-items:baseline;margin-bottom:14px}
+    .section-title h3,.section-title h2{margin:0}
+    .pill{font-size:.78rem;padding:5px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-weight:700}
+    form{display:grid;gap:10px}
+    label{display:block;font-size:.92rem;color:var(--muted);margin-bottom:4px}
+    input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;font:inherit;background:#fff}
+    textarea{min-height:92px;resize:vertical}
+    button{border:none;border-radius:12px;padding:11px 14px;background:var(--primary);color:#fff;font-weight:800;cursor:pointer}
+    button:hover{background:var(--primary-2)}
+    .flash{padding:12px 14px;border-radius:14px;margin-bottom:14px}
+    .success{background:var(--good);color:var(--good-t)}
+    .error{background:#fee2e2;color:#991b1b}
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px}
+    table{width:100%;border-collapse:collapse;min-width:760px;background:#fff}
+    th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+    th{position:sticky;top:0;background:var(--panel-2);z-index:1}
+    .muted{color:var(--muted)}
+    .cols-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .links{display:flex;flex-wrap:wrap;gap:10px}
+    .badge{display:inline-flex;align-items:center;padding:6px 10px;border-radius:999px;background:#f1f5f9;color:#334155;font-size:.82rem}
+    @media (max-width: 1100px){.shell{grid-template-columns:1fr}.side{position:relative;height:auto;border-right:none;border-bottom:1px solid var(--line)}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.cols-2{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <div class="brand">
+      <div class="logo"></div>
+      <div>
+        <h1>Gestión Profesoral</h1>
+      </div>
+    </div>
+    <div class="nav">
+      <a class="active" href="#resumen">Resumen</a>
+      <a href="#crear">Crear registros</a>
+      <a href="#docentes">Docentes</a>
+      <a href="#programas">Programas</a>
+      <a href="#evaluaciones">Evaluaciones</a>
+    </div>
+    <div style="margin-top:22px" class="card">
+      <div class="section-title"><h3>API base</h3><span class="pill">{{ api_base }}</span></div>
+      <div class="muted" style="font-size:.92rem;line-height:1.5">
+        La navegación principal está en <strong>/api/v1</strong>. Desde aqui podemos revisar que la api funciones y su informacion
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <section id="resumen" class="top">
+      <div class="hero">
+        <h2>Panel administrativo de gestión profesoral</h2>
+        <p>Esta versión está organizada para sustentación: incluye navegación clara, módulos separados, resumen del sistema y acceso directo a la documentación automática de FastAPI.</p>
+      </div>
+      <div class="actions">
+        <a class="btn primary" href="{{ api_base }}/docs" target="_blank" rel="noreferrer">Abrir documentación</a>
+      </div>
+    </section>
+
+    <section class="stats">
+      <div class="stat"><div class="label">Facultades</div><div class="value">{{ resumen.get('facultades', 0) }}</div></div>
+      <div class="stat"><div class="label">Líneas</div><div class="value">{{ resumen.get('lineas', 0) }}</div></div>
+      <div class="stat"><div class="label">Programas</div><div class="value">{{ resumen.get('programas', 0) }}</div></div>
+      <div class="stat"><div class="label">Docentes</div><div class="value">{{ resumen.get('docentes', 0) }}</div></div>
+      <div class="stat"><div class="label">Evaluaciones</div><div class="value">{{ resumen.get('evaluaciones', 0) }}</div></div>
+    </section>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <section id="crear" class="grid">
+      <div class="card">
+        <div class="section-title"><h3>Crear docente</h3><span class="pill">/api/v1/docentes</span></div>
+        <form action="/crear_docente" method="post">
+          <div><label>Cédula</label><input type="number" name="cedula" required></div>
+          <div><label>Nombres</label><input type="text" name="nombres" required></div>
+          <div><label>Apellidos</label><input type="text" name="apellidos" required></div>
+          <div><label>Correo</label><input type="email" name="correo" required></div>
+          <div><label>Línea principal</label><select name="linea_investigacion_principal"><option value="">Sin asignar</option>{% for linea in lineas %}<option value="{{ linea.id }}">{{ linea.nombre }}</option>{% endfor %}</select></div>
+          <div class="cols-2">
+            <div><label>Género</label><input type="text" name="genero"></div>
+            <div><label>Cargo</label><input type="text" name="cargo"></div>
+          </div>
+          <div><label>Teléfono</label><input type="text" name="telefono"></div>
+          <button type="submit">Guardar docente</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h3>Crear programa</h3><span class="pill">/api/v1/programas</span></div>
+        <form action="/crear_programa" method="post">
+          <div><label>Nombre</label><input type="text" name="nombre" required></div>
+          <div class="cols-2">
+            <div>
+            <label for="tipo">Tipo</label>
+            <select name="tipo" id="tipo">
+              <option value="" disabled selected>Una opción</option>
+              <option value="facultad">Ciencias empresariales</option>
+              <option value="departamento">Ingenieria</option>
+              <option value="instituto">Artes</option>
+              <option value="instituto">Actividades fisicas</option>
+              <option value="instituto">Licenciaturas</option>
+            </select>
+          </div>
+          <div>
+            <label for="nivel">Nivel</label>
+            <select name="nivel" id="nivel">
+              <option value="" disabled selected>Escoje</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </div>
+          </div>
+          <div><label>Ciudad</label><input type="text" name="ciudad"></div>
+          <div><label>Facultad</label><select name="facultad_id"><option value="">Sin asignar</option>{% for facultad in facultades %}<option value="{{ facultad.id }}">{{ facultad.nombre }}</option>{% endfor %}</select></div>
+          <button type="submit">Guardar programa</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h3>Crear evaluación</h3><span class="pill">/api/v1/evaluaciones</span></div>
+        <form action="/crear_evaluacion" method="post">
+          <div><label>Docente</label><select name="docente" required><option value="">Selecciona</option>{% for d in docentes %}<option value="{{ d.cedula }}">{{ d.cedula }} — {{ d.nombres }} {{ d.apellidos }}</option>{% endfor %}</select></div>
+          <div class="cols-2">
+            <div>
+            <label for="semestre">Semestre</label>
+            <select name="semestre" id="semestre">
+              <option value="" disabled selected>Una opción</option>
+              <option value="2026-1">2026-1</option>
+              <option value="2026-2">2026-2</option>
+              <option value="2027-1">2027-1</option>
+              <option value="2027-2">2027-2</option>
+            </select>
+          </div>
+            <div><label>Calificación</label><input type="number" step="0.1" name="calificacion" required></div>
+          </div>
+          <button type="submit">Guardar evaluación</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h3>Crear facultad</h3><span class="pill">/api/v1/facultades</span></div>
+        <form action="/crear_facultad" method="post">
+          <div><label>Nombre</label><input type="text" name="nombre" required></div>
+          <div>
+            <label for="tipo">Tipo</label>
+            <select name="tipo" id="tipo">
+              <option value="" disabled selected>Selecciona una opción</option>
+              <option value="facultad">Ciencias empresariales</option>
+              <option value="departamento">Ingenieria</option>
+              <option value="instituto">Artes</option>
+              <option value="instituto">Actividades fisicas</option>
+              <option value="instituto">Licenciaturas</option>
+            </select>
+          </div>
+
+          <button type="submit">Guardar facultad</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <div class="section-title"><h3>Crear línea</h3><span class="pill">/api/v1/lineas</span></div>
+        <form action="/crear_linea" method="post">
+          <div><label>Nombre</label><input type="text" name="nombre" required></div>
+          <div><label>Descripción</label><textarea name="descripcion" placeholder="Descripción breve"></textarea></div>
+          <button type="submit">Guardar línea</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="docentes" class="card" style="margin-top:2px">
+      <div class="section-title"><h3>Docentes</h3><span class="pill">{{ docentes|length }} registros</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Cédula</th><th>Nombres</th><th>Apellidos</th><th>Correo</th><th>Línea principal</th><th>Actualización</th><th>Acciones</th></tr>
+          </thead>
+          <tbody>
+            {% for d in docentes %}
+            <tr>
+              {% set docente_id = d.id if d.id is defined else d.cedula %}
+              <td>{{ d.cedula }}</td>
+              <td>{{ d.nombres }}</td>
+              <td>{{ d.apellidos }}</td>
+              <td>{{ d.correo }}</td>
+              <td>{{ d.linea_investigacion_principal if d.linea_investigacion_principal is not none else '-' }}</td>
+              <td>{{ d.fecha_actualizacion if d.fecha_actualizacion else '-' }}</td>
+              <td>
+                <form action="{{ url_for('eliminar_docente', id=docente_id) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este docente?');">
+                  <button type="submit" class="btn" style="background:#ef4444">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid" style="margin-top:16px">
+      <div id="programas" class="card">
+        <div class="section-title"><h3>Programas</h3><span class="pill">{{ programas|length }} registros</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Id</th><th>Nombre</th><th>Tipo</th><th>Nivel</th><th>Ciudad</th><th>Acciones</th></tr></thead>
+            <tbody>
+              {% for p in programas %}
+              <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.nombre }}</td>
+                <td>{{ p.tipo or '-' }}</td>
+                <td>{{ p.nivel or '-' }}</td>
+                <td>{{ p.ciudad or '-' }}</td>
+                <td>
+                  <form action="{{ url_for('eliminar_programa', id=p.id) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar este programa?');">
+                    <button type="submit" class="btn" style="background:#ef4444">Eliminar</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div id="evaluaciones" class="card">
+        <div class="section-title"><h3>Evaluaciones</h3><span class="pill">{{ evaluaciones|length }} registros</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Id</th><th>Docente</th><th>Semestre</th><th>Calificación</th><th>Acciones</th></tr></thead>
+            <tbody>
+              {% for e in evaluaciones %}
+              <tr>
+                <td>{{ e.id }}</td>
+                <td>{{ e.docente }}</td>
+                <td>{{ e.semestre }}</td>
+                <td>{{ e.calificacion }}</td>
+                <td>
+                  <form action="{{ url_for('eliminar_evaluacion', id=e.id) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar esta evaluación?');">
+                    <button type="submit" class="btn" style="background:#ef4444">Eliminar</button>
+                  </form>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <div class="section-title"><h3>Facultades y líneas</h3><span class="pill">Catálogos</span></div>
+        <div class="cols-2">
+        <div>
+          <h4>Facultades</h4>
+          <ul>
+            {% for f in facultades %}
+              <li>
+                {{ f.id }} — {{ f.nombre }}
+                <form style="display:inline;margin-left:8px" action="{{ url_for('eliminar_facultad', id=f.id) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar esta facultad?');">
+                  <button type="submit" class="btn" style="background:#ef4444;padding:6px 8px;font-weight:700">Eliminar</button>
+                </form>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <div>
+          <h4>Líneas</h4>
+          <ul>
+            {% for l in lineas %}
+              <li>
+                {{ l.id }} — {{ l.nombre }}
+                <form style="display:inline;margin-left:8px" action="{{ url_for('eliminar_linea', id=l.id) }}" method="POST" onsubmit="return confirm('¿Seguro que deseas eliminar esta línea?');">
+                  <button type="submit" class="btn" style="background:#ef4444;padding:6px 8px;font-weight:700">Eliminar</button>
+                </form>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+</body>
+</html>
