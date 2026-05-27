@@ -8,9 +8,8 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 
-from api.app.database import Base, engine, get_db
-from api.app.routes import docente, evaluacion, facultad, linea, programa
-Base.metadata.create_all(bind=engine)
+from database import Base, engine, get_db
+from routes import docente, evaluacion, facultad, linea, programa
 
 
 @asynccontextmanager
@@ -80,8 +79,8 @@ def health():
 
 @app.get("/api/v1/resumen")
 def resumen():
-    from api.app.database import SessionLocal
-    from api.app.models import Facultad, LineaInvestigacion, Programa, Docente, EvaluacionDocente
+    from database import SessionLocal
+    from models import Facultad, LineaInvestigacion, Programa, Docente, EvaluacionDocente
 
     db = SessionLocal()
     try:
@@ -102,7 +101,8 @@ app.include_router(programa.router, prefix="/api/v1")
 app.include_router(docente.router, prefix="/api/v1")
 app.include_router(evaluacion.router, prefix="/api/v1")
 
+Base.metadata.create_all(bind=engine)
+
 if __name__ == "__main__":
     import uvicorn
-    # Esto inicia el servidor y lo mantiene abierto
-    uvicorn.run("api.app.main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
