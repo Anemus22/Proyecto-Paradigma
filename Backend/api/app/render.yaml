@@ -3,7 +3,7 @@ services:
     name: api-generica-crud
     env: python
     plan: free
-    buildCommand: pip install -r requirements-prod.txt
+    buildCommand: pip install --upgrade pip setuptools wheel && pip install -r requirements-prod.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: ENVIRONMENT
